@@ -1,3 +1,5 @@
+<?php include("../includes/header.php"); ?>
+
 <?php
 include("../dbconfig.php");
 
@@ -26,7 +28,9 @@ if(isset($_REQUEST['submit'])){
 <!DOCTYPE html>
 <html>
 <head>
+     <link rel="stylesheet" href="../assests/style.css">
     <title>Register | Punjab Job Portal</title>
+      
 </head>
 <body>
     <h2>Register</h2>
@@ -45,3 +49,4 @@ if(isset($_REQUEST['submit'])){
     <p>Already have an account? <a href="../auth/login.php">Login</a></p>
 </body>
 </html>
+<?php include("../includes/footer.php"); ?>

@@ -1,35 +1,37 @@
+<?php include("../includes/header.php"); ?>
+
 <?php
-require_once '../includes/auth_check.php';
-require_once '../config/db.php';
-
-if ($_SESSION['role'] !== 'jobseeker') {
-    header("Location: ../auth/login.php");
-    exit;
-}
-
+include("../dbconfig.php");
+session_start();
 // Fetch all jobs
-$stmt = $pdo->query("SELECT jobs.*, users.name AS employer_name FROM jobs JOIN users ON jobs.employer_id = users.id ORDER BY posted_at DESC");
-$jobs = $stmt->fetchAll();
+$query="SELECT jobs.*, users.name AS employer_name 
+        FROM jobs JOIN users ON jobs.employer_id = users.id 
+        ORDER BY posted_at DESC";
+
+$data=$con->prepare($query);
+$data->execute();
+$jobs=$data->fetchAll();
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+       <link rel="stylesheet" href="../assests/style.css">
     <title>Browse Jobs | Job Seeker Dashboard</title>
 </head>
 <body>
     <h2><?php
-if (isset($_GET['applied'])) {
+if (isset($_REQUEST['applied'])) {
     echo "<p style='color:green;'>Applied successfully!</p>";
 }
-if (isset($_GET['already'])) {
+if (isset($_REQUEST['already'])) {
     echo "<p style='color:red;'>You have already applied for this job.</p>";
 }
 ?>
 
             Browse Jobs</h2>
 
-    <p><a href="dashboard.php">← Back to Dashboard</a></p>
+    <p><a href="./dashboard.php">← Back to Dashboard</a></p>
 
     <?php foreach ($jobs as $job): ?>
         <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
@@ -39,7 +41,7 @@ if (isset($_GET['already'])) {
             <p><strong>Category:</strong> <?php echo htmlspecialchars($job['category']); ?></p>
             <p><strong>Salary:</strong> <?php echo htmlspecialchars($job['salary']); ?></p>
             <p><?php echo nl2br(htmlspecialchars($job['description'])); ?></p>
-            <form method="POST" action="apply-job.php">
+            <form method="POST" action="./applyjob.php">
                 <input type="hidden" name="job_id" value="<?php echo $job['id']; ?>">
                 <button type="submit">Apply</button>
             </form>
@@ -47,3 +49,4 @@ if (isset($_GET['already'])) {
     <?php endforeach; ?>
 </body>
 </html>
+<?php include("../includes/footer.php"); ?>

@@ -1,11 +1,8 @@
-<?php
-require_once '../includes/auth_check.php';
-require_once '../config/db.php';
+<?php include("../includes/header.php"); ?>
 
-if ($_SESSION['role'] !== 'employer') {
-    header("Location: ../auth/login.php");
-    exit;
-}
+<?php
+session_start();
+include("../dbconfig.php");
 
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -18,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!$title || !$description || !$location || !$category || !$salary) {
         $errors[] = "All fields are required.";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO jobs (employer_id, title, description, location, category, salary) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $con->prepare("INSERT INTO jobs (employer_id, title, description, location, category, salary) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $_SESSION['user_id'],
             $title,
@@ -37,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
+       <link rel="stylesheet" href="../assests/style.css">
     <title>Post a Job | Employer Dashboard</title>
 </head>
 <body>
@@ -52,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit">Post Job</button>
     </form>
 
-    <p><a href="dashboard.php">Back to Dashboard</a></p>
+    <p><a href="../employer/dashboard.php">Back to Dashboard</a></p>
 </body>
 </html>
+<?php include("../includes/footer.php"); ?>
